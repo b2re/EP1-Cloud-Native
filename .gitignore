@@ -1,0 +1,21 @@
+# Carpetas locales que no son parte de Pedidos360
+frontHospital2R-main/
+hospital-k8-main/
+.github/
+.vscode/
+guias/
+
+# Java / Maven
+target/
+HELP.md
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+
+# IDE / SO
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
