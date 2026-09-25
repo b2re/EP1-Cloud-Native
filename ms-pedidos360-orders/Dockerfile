@@ -23,14 +23,16 @@ WORKDIR /app
 
 #Copia mágica:toma el .jar que se generó en la primera etapa (builder) y
 #lo copia a la nueva carpeta, renombrandolo como app.jar
-COPY --from=builder /app/target/*.jar app.jar
+#(nombre exacto: el plugin Shade deja varios .jar en target/)
+COPY --from=builder /app/target/ms-pedidos360-orders-0.0.1-SNAPSHOT.jar app.jar
 
-#Le dice a Docker: "Oye, cuando este contenedor corra, voy a usar el puerto 8080 internamente"
+#Le dice a Docker: "Oye, cuando este contenedor corra, voy a usar el puerto 8082 internamente"
 #"(solo es informativo)"
-EXPOSE 8080
+EXPOSE 8082
 
 #El comando que se ejecuta cuando el contenedor arranca: lanza tu aplicación Spring Boot
-ENTRYPOINT ["java", "-jar", "app.jar"]
+#El jar generado por Shade no trae Main-Class, por eso se indica la clase principal
+ENTRYPOINT ["java", "-cp", "app.jar", "com.pedidos360.orders.OrdersApplication"]
 
 #Resumen del Dockerfile: Coges tu código, lo compilas con Maven en un entorno pesado, 
 #te quedas solo con el .jar resultante, lo pones en un entorno liviano con solo Java y 
