@@ -2,8 +2,8 @@
 export const environment = {
   production: false,
   msal: {
-    clientId: '00000000-0000-0000-0000-000000000000',
-    tenantId: '00000000-0000-0000-0000-000000000000',
+    clientId: 'd0ce76dc-a17f-41b2-8f1e-4133e54eaccf',
+    tenantId: '1e87bf6c-d4ac-4580-b8e9-3cce13a0c048',
   },
   api: {
     baseUrl: 'https://21blw9fx3e.execute-api.us-east-1.amazonaws.com',

@@ -1,11 +1,11 @@
-// Configuración de producción. Reemplazar los valores de Entra ID cuando existan los App Registrations.
+// Configuración de producción (tenant Pedidos360 de Microsoft Entra ID).
 export const environment = {
   production: true,
   msal: {
     // Application (client) ID del App Registration del frontend (SPA)
-    clientId: '00000000-0000-0000-0000-000000000000',
+    clientId: 'd0ce76dc-a17f-41b2-8f1e-4133e54eaccf',
     // Directory (tenant) ID
-    tenantId: '00000000-0000-0000-0000-000000000000',
+    tenantId: '1e87bf6c-d4ac-4580-b8e9-3cce13a0c048',
   },
   api: {
     // URL pública de AWS API Gateway (único punto de entrada al backend)
