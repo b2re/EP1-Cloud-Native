@@ -1,0 +1,53 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 24px;
+  background: var(--primary);
+  color: #fff;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+nav {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+nav a {
+  color: #dbe4ff;
+  text-decoration: none;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+}
+
+nav a.active,
+nav a:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name {
+  font-size: 0.9rem;
+}
+
+.user .badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.user button {
+  background: #fff;
+  color: var(--primary);
+}

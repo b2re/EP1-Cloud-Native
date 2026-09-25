@@ -1,0 +1,78 @@
+<h1>{{ auth.isStaff() ? 'Gestión de pedidos' : 'Mis pedidos' }}</h1>
+
+@if (message(); as msg) {
+  <p class="alert" [class.error]="msg.type === 'error'" [class.ok]="msg.type === 'ok'">{{ msg.text }}</p>
+}
+
+<div class="card">
+  <h3>Nuevo pedido</h3>
+  <form class="inline-form" (ngSubmit)="create()">
+    <label>
+      Producto
+      <select name="product" [(ngModel)]="newProductId" required>
+        <option [ngValue]="null" disabled>Seleccione…</option>
+        @for (p of products(); track p.id) {
+          <option [ngValue]="p.id">{{ p.name }} — ${{ p.price }} (stock {{ p.stock }})</option>
+        }
+      </select>
+    </label>
+    <label>
+      Cantidad
+      <input type="number" name="quantity" min="1" [(ngModel)]="newQuantity" required />
+    </label>
+    <button type="submit" [disabled]="busy()">Crear pedido</button>
+  </form>
+  <p class="muted small">El stock se descuenta cuando un operador acepta el pedido.</p>
+</div>
+
+<div class="card">
+  <h3>{{ auth.isStaff() ? 'Todos los pedidos' : 'Historial' }}</h3>
+
+  @if (orders().length === 0) {
+    <p class="muted">No hay pedidos.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          @if (auth.isStaff()) {
+            <th>Cliente</th>
+          }
+          <th>Producto</th>
+          <th class="num">Cantidad</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of orders(); track order.id) {
+          <tr>
+            <td>{{ order.id }}</td>
+            @if (auth.isStaff()) {
+              <td class="mono" [title]="order.customerId">{{ order.customerId.slice(0, 8) }}…</td>
+            }
+            <td>{{ productName(order.productId) }}</td>
+            <td class="num">{{ order.quantity }}</td>
+            <td><span class="status" [class]="'status s-' + order.status">{{ statusLabels[order.status] }}</span></td>
+            <td>{{ order.createdAt | date: 'dd-MM-yyyy HH:mm' }}</td>
+            <td class="actions">
+              @for (next of actionsFor(order); track next) {
+                <button
+                  [class.danger]="next === 'CANCELADO'"
+                  [disabled]="busy()"
+                  (click)="changeStatus(order, next)"
+                >
+                  {{ next === 'CANCELADO' ? 'Cancelar' : statusLabels[next] }}
+                </button>
+              }
+              @if (auth.isAdmin()) {
+                <button class="secondary" [disabled]="busy()" (click)="remove(order)">Eliminar</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

@@ -1,0 +1,78 @@
+<h1>Dashboard</h1>
+
+@if (error()) {
+  <p class="alert error">{{ error() }}</p>
+}
+
+@if (loading()) {
+  <p class="muted">Cargando…</p>
+} @else if (!error()) {
+  @if (auth.isAdmin()) {
+    <h2>Visión global</h2>
+    <div class="stats">
+      <div class="stat"><span>{{ products().length }}</span>Productos</div>
+      <div class="stat warn"><span>{{ lowStock().length }}</span>Con stock bajo</div>
+      <div class="stat"><span>{{ orders().length }}</span>Pedidos totales</div>
+      <div class="stat"><span>{{ active() }}</span>Pedidos activos</div>
+    </div>
+
+    <div class="card">
+      <h3>Pedidos por estado</h3>
+      <table>
+        <tbody>
+          @for (status of statuses; track status) {
+            <tr>
+              <td><span class="status" [class]="'status s-' + status">{{ statusLabels[status] }}</span></td>
+              <td class="num">{{ count(status) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (lowStock().length > 0) {
+      <div class="card">
+        <h3>Productos con stock bajo</h3>
+        <ul>
+          @for (p of lowStock(); track p.id) {
+            <li>{{ p.name }}: {{ p.stock }} unidades</li>
+          }
+        </ul>
+        <a routerLink="/catalog">Ir al catálogo</a>
+      </div>
+    }
+  } @else if (auth.isOperador()) {
+    <h2>Operación diaria</h2>
+    <div class="stats">
+      <div class="stat warn"><span>{{ pending() }}</span>Por aceptar</div>
+      <div class="stat"><span>{{ inProgress() }}</span>En proceso</div>
+      <div class="stat"><span>{{ dispatched() }}</span>Despachados</div>
+      <div class="stat"><span>{{ lowStock().length }}</span>Stock bajo</div>
+    </div>
+    <p><a routerLink="/orders">Gestionar pedidos</a> · <a routerLink="/catalog">Controlar stock</a></p>
+  } @else if (auth.isCliente()) {
+    <h2>Mis pedidos</h2>
+    <div class="stats">
+      <div class="stat"><span>{{ orders().length }}</span>Pedidos realizados</div>
+      <div class="stat"><span>{{ active() }}</span>En curso</div>
+      <div class="stat"><span>{{ delivered() }}</span>Entregados</div>
+    </div>
+    <p><a routerLink="/orders">Crear o seguir un pedido</a></p>
+  } @else {
+    <p class="alert error">Su usuario no tiene un rol asignado en Microsoft Entra ID.</p>
+  }
+}
+
+<div class="card token">
+  <h3>Sesión (claims del access token)</h3>
+  <dl>
+    <dt>Usuario</dt>
+    <dd>{{ auth.account()?.name }} ({{ auth.account()?.username }})</dd>
+    <dt>Roles</dt>
+    <dd>{{ auth.roles().join(', ') || '—' }}</dd>
+    <dt>Scopes</dt>
+    <dd>{{ auth.scopes().join(', ') || '—' }}</dd>
+    <dt>Expira</dt>
+    <dd>{{ tokenExpiry() | date: 'dd-MM-yyyy HH:mm:ss' }}</dd>
+  </dl>
+</div>

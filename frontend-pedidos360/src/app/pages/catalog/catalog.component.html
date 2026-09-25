@@ -1,0 +1,72 @@
+<h1>Catálogo</h1>
+
+@if (message(); as msg) {
+  <p class="alert" [class.error]="msg.type === 'error'" [class.ok]="msg.type === 'ok'">{{ msg.text }}</p>
+}
+
+@if (auth.isAdmin()) {
+  <div class="card">
+    <h3>{{ editingId ? 'Editar producto #' + editingId : 'Nuevo producto' }}</h3>
+    <form class="inline-form" (ngSubmit)="save()">
+      <label>
+        Nombre
+        <input name="name" [(ngModel)]="form.name" required />
+      </label>
+      <label>
+        Precio
+        <input type="number" name="price" min="0" [(ngModel)]="form.price" required />
+      </label>
+      <label>
+        Stock
+        <input type="number" name="stock" min="0" [(ngModel)]="form.stock" required />
+      </label>
+      <button type="submit" [disabled]="busy()">{{ editingId ? 'Guardar' : 'Crear' }}</button>
+      @if (editingId) {
+        <button type="button" class="secondary" (click)="cancelEdit()">Cancelar</button>
+      }
+    </form>
+  </div>
+}
+
+<div class="card">
+  <h3>Productos</h3>
+
+  @if (products().length === 0) {
+    <p class="muted">No hay productos.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre</th>
+          <th class="num">Precio</th>
+          <th class="num">Stock</th>
+          <th>Control de stock</th>
+          @if (auth.isAdmin()) {
+            <th>Acciones</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of products(); track p.id) {
+          <tr [class.low]="p.stock < lowStock">
+            <td>{{ p.id }}</td>
+            <td>{{ p.name }}</td>
+            <td class="num">${{ p.price }}</td>
+            <td class="num">{{ p.stock }}</td>
+            <td class="actions">
+              <input type="number" min="0" class="stock-input" [name]="'stock' + p.id" [(ngModel)]="stockEdits[p.id!]" />
+              <button [disabled]="busy()" (click)="updateStock(p)">Actualizar</button>
+            </td>
+            @if (auth.isAdmin()) {
+              <td class="actions">
+                <button class="secondary" [disabled]="busy()" (click)="edit(p)">Editar</button>
+                <button class="danger" [disabled]="busy()" (click)="remove(p)">Eliminar</button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

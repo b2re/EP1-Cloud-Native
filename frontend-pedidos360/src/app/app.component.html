@@ -1,0 +1,25 @@
+@if (auth.account(); as account) {
+  <header class="topbar">
+    <span class="brand">Pedidos360</span>
+
+    <nav>
+      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/orders" routerLinkActive="active">Pedidos</a>
+      @if (auth.isStaff()) {
+        <a routerLink="/catalog" routerLinkActive="active">Catálogo</a>
+      }
+    </nav>
+
+    <div class="user">
+      <span class="user-name">{{ account.name || account.username }}</span>
+      @for (role of auth.roles(); track role) {
+        <span class="badge">{{ roleLabel(role) }}</span>
+      }
+      <button class="secondary" (click)="auth.logout()">Cerrar sesión</button>
+    </div>
+  </header>
+}
+
+<main class="container">
+  <router-outlet />
+</main>
